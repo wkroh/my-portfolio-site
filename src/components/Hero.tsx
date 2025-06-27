@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ChevronDown, Github, Linkedin, Mail, Zap, Code, Database } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -157,7 +156,7 @@ export const Hero = () => {
         {/* Enhanced Scroll Indicator */}
         <button 
           onClick={scrollToAbout}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 group"
+          className="absolute bottom-4 left-1/2 transform -translate-x-1/2 group"
         >
           <div className="glass-card p-3 rounded-full border border-portfolio-mint/30 hover:border-portfolio-mint/60 transition-all duration-300">
             <ChevronDown size={32} className="text-portfolio-mint group-hover:text-portfolio-mint/80 transition-colors animate-bounce" />
