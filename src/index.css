@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
+/* Enhanced Cyber Design System */
 
 @layer base {
   :root {
@@ -48,35 +48,218 @@
     @apply bg-portfolio-bg text-portfolio-text;
     background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
   html {
     scroll-behavior: smooth;
   }
+
+  /* Cyber Grid Background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(rgba(0, 255, 213, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 213, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: -1;
+  }
 }
 
 @layer components {
   .gradient-text {
-    background: linear-gradient(135deg, #00ffd5, #8f00ff);
+    background: linear-gradient(135deg, #00ffd5, #8f00ff, #ff006a);
+    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    animation: gradient-shift 3s ease-in-out infinite;
   }
 
   .glass-card {
-    background: rgba(26, 26, 26, 0.8);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(26, 26, 26, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 255, 213, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 213, 0.1), transparent);
+    transition: left 0.8s;
+  }
+
+  .glass-card:hover::before {
+    left: 100%;
   }
 
   .neon-border {
-    box-shadow: 0 0 20px rgba(0, 255, 213, 0.3);
-    border: 1px solid rgba(0, 255, 213, 0.5);
+    box-shadow: 
+      0 0 20px rgba(0, 255, 213, 0.4),
+      inset 0 0 20px rgba(0, 255, 213, 0.1);
+    border: 1px solid rgba(0, 255, 213, 0.6);
+    position: relative;
+  }
+
+  .neon-border::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg, #00ffd5, #8f00ff, #ff006a, #00ffd5);
+    background-size: 400% 400%;
+    border-radius: inherit;
+    z-index: -1;
+    animation: border-flow 4s linear infinite;
+    opacity: 0.5;
   }
 
   .hover-glow:hover {
-    box-shadow: 0 0 30px rgba(0, 255, 213, 0.4);
-    transform: translateY(-2px);
+    box-shadow: 
+      0 0 30px rgba(0, 255, 213, 0.6),
+      0 0 60px rgba(0, 255, 213, 0.4),
+      0 0 100px rgba(0, 255, 213, 0.2);
+    transform: translateY(-5px) scale(1.02);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .cyber-button {
+    position: relative;
+    background: linear-gradient(45deg, #00ffd5, #8f00ff);
+    border: none;
+    color: #0f0f0f;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    overflow: hidden;
     transition: all 0.3s ease;
   }
+
+  .cyber-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+  }
+
+  .cyber-button:hover::before {
+    left: 100%;
+  }
+
+  .cyber-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 255, 213, 0.4);
+  }
+
+  .floating-element {
+    animation: float-cyber 6s ease-in-out infinite;
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .text-glow {
+    text-shadow: 
+      0 0 10px rgba(0, 255, 213, 0.8),
+      0 0 20px rgba(0, 255, 213, 0.6),
+      0 0 30px rgba(0, 255, 213, 0.4);
+  }
+
+  .hologram {
+    background: linear-gradient(45deg, 
+      rgba(0, 255, 213, 0.1) 0%,
+      rgba(143, 0, 255, 0.1) 25%,
+      rgba(255, 0, 106, 0.1) 50%,
+      rgba(0, 255, 213, 0.1) 75%,
+      rgba(143, 0, 255, 0.1) 100%
+    );
+    background-size: 400% 400%;
+    animation: hologram-shift 8s ease-in-out infinite;
+  }
+
+  .scan-lines::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: linear-gradient(
+      transparent 50%,
+      rgba(0, 255, 213, 0.03) 50%,
+      rgba(0, 255, 213, 0.03) 51%,
+      transparent 51%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    animation: scan-lines 0.1s linear infinite;
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes border-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes float-cyber {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-20px) rotate(1deg); }
+  50% { transform: translateY(-10px) rotate(-1deg); }
+  75% { transform: translateY(-15px) rotate(0.5deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(0, 255, 213, 0.4);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(0, 255, 213, 0.8);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes hologram-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes scan-lines {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+.glitch-effect:hover {
+  animation: glitch 0.3s ease-in-out;
 }
