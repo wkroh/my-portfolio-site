@@ -1,11 +1,8 @@
 
 import React from 'react';
 import { ExternalLink, Github } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 export const Projects = () => {
-  const { t } = useLanguage();
-
   const projects = [
     {
       title: 'E-Commerce Platform',
@@ -41,9 +38,7 @@ export const Projects = () => {
     <section id="projects" className="py-20 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">
-            <span className="gradient-text">{t('projects_title')}</span>
-          </h2>
+          <h2 className="text-4xl font-bold text-white mb-4">Projects</h2>
           <div className="w-16 h-1 bg-gradient-to-r from-portfolio-mint to-portfolio-purple rounded mx-auto"></div>
         </div>
 

@@ -26,28 +26,6 @@
     --ring: 0 255 213;
     --radius: 0.5rem;
   }
-
-  .light {
-    --background: 255 255 255;
-    --foreground: 15 15 15;
-    --card: 245 245 245;
-    --card-foreground: 15 15 15;
-    --popover: 245 245 245;
-    --popover-foreground: 15 15 15;
-    --primary: 0 255 213;
-    --primary-foreground: 15 15 15;
-    --secondary: 143 0 255;
-    --secondary-foreground: 240 240 240;
-    --muted: 245 245 245;
-    --muted-foreground: 136 136 136;
-    --accent: 255 0 106;
-    --accent-foreground: 240 240 240;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 230 230 230;
-    --input: 245 245 245;
-    --ring: 0 255 213;
-  }
 }
 
 @layer base {
@@ -56,64 +34,14 @@
   }
 
   body {
-    @apply bg-portfolio-bg text-portfolio-text transition-colors duration-300;
-    background: linear-gradient(135deg, var(--background), var(--card));
+    @apply bg-portfolio-bg text-portfolio-text;
+    background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
     min-height: 100vh;
     overflow-x: hidden;
   }
 
-  .light body {
-    background: linear-gradient(135deg, #ffffff, #f5f5f5);
-    --portfolio-bg: #ffffff;
-    --portfolio-card: #f5f5f5;
-    --portfolio-text: #0f0f0f;
-  }
-
   html {
     scroll-behavior: smooth;
-  }
-
-  /* RTL Support */
-  .rtl {
-    direction: rtl;
-    text-align: right;
-  }
-
-  .rtl .flex {
-    flex-direction: row-reverse;
-  }
-
-  .rtl .space-x-8 > * + * {
-    margin-left: 0;
-    margin-right: 2rem;
-  }
-
-  .rtl .space-x-6 > * + * {
-    margin-left: 0;
-    margin-right: 1.5rem;
-  }
-
-  .rtl .space-x-4 > * + * {
-    margin-left: 0;
-    margin-right: 1rem;
-  }
-
-  .rtl .space-x-2 > * + * {
-    margin-left: 0;
-    margin-right: 0.5rem;
-  }
-
-  .rtl .text-left {
-    text-align: right;
-  }
-
-  .rtl .text-right {
-    text-align: left;
-  }
-
-  /* Arabic font support */
-  .rtl * {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Arabic UI Text', 'Geeza Pro', 'Traditional Arabic';
   }
 }
 
@@ -122,12 +50,6 @@
     background: rgba(26, 26, 26, 0.8);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-  }
-
-  .light .glass-card {
-    background: rgba(245, 245, 245, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.1);
   }
 
   .hover-glow:hover {
@@ -136,34 +58,5 @@
       0 0 60px rgba(0, 255, 213, 0.2);
     transform: translateY(-2px);
     transition: all 0.3s ease;
-  }
-
-  .gradient-text {
-    background: linear-gradient(135deg, #00ffd5, #8f00ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .neon-border {
-    border: 1px solid rgba(0, 255, 213, 0.3);
-    box-shadow: 
-      0 0 10px rgba(0, 255, 213, 0.2),
-      inset 0 0 10px rgba(0, 255, 213, 0.1);
-  }
-
-  /* Security: Prevent content injection */
-  * {
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
-  }
-
-  input, textarea {
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
   }
 }
