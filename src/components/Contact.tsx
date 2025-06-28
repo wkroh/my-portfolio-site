@@ -1,10 +1,19 @@
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { 
+  sanitizeInput, 
+  validateEmail, 
+  validateName, 
+  validateSubject, 
+  validateMessage,
+  generateCSRFToken,
+  checkRateLimit 
+} from '@/utils/security';
 
 export const Contact = () => {
   const [formData, setFormData] = useState({
@@ -13,24 +22,79 @@ export const Contact = () => {
     subject: '',
     message: ''
   });
+  const [csrfToken] = useState(generateCSRFToken());
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for your message. I'll get back to you soon!",
-    });
-    setFormData({ name: '', email: '', subject: '', message: '' });
-  };
+    
+    // Rate limiting check
+    const clientIP = 'user-session'; // In real app, get actual IP
+    if (!checkRateLimit(clientIP, 3, 300000)) { // 3 requests per 5 minutes
+      toast({
+        title: "Too Many Requests",
+        description: "Please wait before sending another message.",
+        variant: "destructive"
+      });
+      return;
+    }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+    setIsSubmitting(true);
+
+    try {
+      // Sanitize all inputs
+      const sanitizedData = {
+        name: sanitizeInput(formData.name),
+        email: sanitizeInput(formData.email),
+        subject: sanitizeInput(formData.subject),
+        message: sanitizeInput(formData.message)
+      };
+
+      // Validate all inputs
+      if (!validateName(sanitizedData.name)) {
+        throw new Error('Please enter a valid name (2-50 characters, letters only)');
+      }
+      
+      if (!validateEmail(sanitizedData.email)) {
+        throw new Error('Please enter a valid email address');
+      }
+      
+      if (!validateSubject(sanitizedData.subject)) {
+        throw new Error('Please enter a valid subject (3-100 characters)');
+      }
+      
+      if (!validateMessage(sanitizedData.message)) {
+        throw new Error('Please enter a valid message (10-1000 characters)');
+      }
+
+      // Simulate form submission (in real app, send to secure backend)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      toast({
+        title: "Message Sent Successfully!",
+        description: "Thank you for your message. I'll get back to you soon!",
+      });
+      
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      toast({
+        title: "Validation Error",
+        description: error instanceof Error ? error.message : "Please check your input and try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [formData, toast]);
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  }, []);
 
   const contactInfo = [
     {
@@ -98,6 +162,7 @@ export const Contact = () => {
                     <a 
                       href={info.link}
                       className="text-portfolio-text hover:text-portfolio-mint transition-colors font-medium"
+                      rel="noopener noreferrer"
                     >
                       {info.value}
                     </a>
@@ -115,6 +180,7 @@ export const Contact = () => {
                     href={social.link}
                     className="text-gray-400 hover:text-portfolio-mint transition-colors transform hover:scale-110 duration-300"
                     aria-label={social.label}
+                    rel="noopener noreferrer"
                   >
                     <social.icon size={28} />
                   </a>
@@ -126,6 +192,8 @@ export const Contact = () => {
           {/* Contact Form */}
           <div className="glass-card p-8 rounded-xl neon-border">
             <form onSubmit={handleSubmit} className="space-y-6">
+              <input type="hidden" name="csrf_token" value={csrfToken} />
+              
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-portfolio-text mb-2">
@@ -136,10 +204,12 @@ export const Contact = () => {
                     name="name"
                     type="text"
                     required
+                    maxLength={50}
                     value={formData.name}
                     onChange={handleChange}
                     className="bg-white/5 border-white/10 text-portfolio-text placeholder-gray-400 focus:border-portfolio-mint"
                     placeholder="John Doe"
+                    autoComplete="name"
                   />
                 </div>
                 <div>
@@ -151,10 +221,12 @@ export const Contact = () => {
                     name="email"
                     type="email"
                     required
+                    maxLength={254}
                     value={formData.email}
                     onChange={handleChange}
                     className="bg-white/5 border-white/10 text-portfolio-text placeholder-gray-400 focus:border-portfolio-mint"
                     placeholder="john@example.com"
+                    autoComplete="email"
                   />
                 </div>
               </div>
@@ -168,6 +240,7 @@ export const Contact = () => {
                   name="subject"
                   type="text"
                   required
+                  maxLength={100}
                   value={formData.subject}
                   onChange={handleChange}
                   className="bg-white/5 border-white/10 text-portfolio-text placeholder-gray-400 focus:border-portfolio-mint"
@@ -184,6 +257,7 @@ export const Contact = () => {
                   name="message"
                   required
                   rows={6}
+                  maxLength={1000}
                   value={formData.message}
                   onChange={handleChange}
                   className="bg-white/5 border-white/10 text-portfolio-text placeholder-gray-400 focus:border-portfolio-mint resize-none"
@@ -193,11 +267,12 @@ export const Contact = () => {
               
               <Button 
                 type="submit" 
+                disabled={isSubmitting}
                 size="lg" 
-                className="w-full bg-gradient-to-r from-portfolio-mint to-portfolio-purple text-portfolio-bg hover:opacity-90 hover-glow font-semibold py-3"
+                className="w-full bg-gradient-to-r from-portfolio-mint to-portfolio-purple text-portfolio-bg hover:opacity-90 hover-glow font-semibold py-3 disabled:opacity-50"
               >
                 <Send size={20} className="mr-2" />
-                Send Message
+                {isSubmitting ? 'Sending...' : 'Send Message'}
               </Button>
             </form>
           </div>

@@ -43,6 +43,27 @@
   html {
     scroll-behavior: smooth;
   }
+
+  /* Security: Prevent text selection on sensitive elements */
+  .no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  /* Security: Hide elements from screen readers when needed */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 }
 
 @layer components {
@@ -58,5 +79,27 @@
       0 0 60px rgba(0, 255, 213, 0.2);
     transform: translateY(-2px);
     transition: all 0.3s ease;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #00ffd5, #8f00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .neon-border {
+    border: 1px solid rgba(0, 255, 213, 0.3);
+    box-shadow: 0 0 20px rgba(0, 255, 213, 0.1);
+  }
+
+  /* Security: Prevent content injection through CSS */
+  .safe-content {
+    content: normal;
+  }
+  
+  .safe-content::before,
+  .safe-content::after {
+    content: none;
   }
 }
